@@ -15,4 +15,4 @@ df2['token'] = token_list
 
 @APP.route('/')
 def hello_world():
-    return df2.['spoken_words'][0]
+    return df2['spoken_words'][0]
