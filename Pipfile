@@ -11,6 +11,9 @@ gunicorn = "*"
 psycopg2 = "*"
 nltk = "*"
 pandas = "*"
+paramiko = "*"
+gensim = "*"
+pickle = "*"
 
 [requires]
 python_version = "3.7"
