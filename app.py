@@ -28,9 +28,12 @@ query_doc_bow = d.doc2bow(query_doc)
 query_doc_tf_idf = t[query_doc_bow]
 v = s[query_doc_tf_idf]
 result = v.argsort()[-10:][::-1]
-print(df['spoken_words'][result])
+condition = (df['id'].isin(result))
+reponse = df[condition]
+reponse.to_json()
+print(reponse.to_json())
 
 
 @APP.route('/')
 def hello_world():
-    return df['spoken_words'][v.argmax()]
+    return reponse.to_json()
