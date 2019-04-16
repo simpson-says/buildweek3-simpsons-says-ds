@@ -36,12 +36,14 @@ def hello_world():
     v = s[query_doc_tf_idf]
     result = v.argsort()[-10:][::-1]
     condition = (df.index.isin(result))
-    reponse = df[condition]
-    # reponse.to_json()
-    print(reponse)
+    response = df[condition]
+    column = ['id', 'raw_character_text', 'spoken_words']
+    response = response[column]
+    response.to_json(orient='records')
+    print(response)
 
 
-    return reponse.to_json()
+    return response.to_json(orient='records')
 
 
 @APP.route('/quoteretieve')
