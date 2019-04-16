@@ -14,7 +14,7 @@ t = pickle.load( open( "tf_idf.p", "rb" ) )
 s = pickle.load( open( "sims.p", "rb" ) )
 df = pickle.load( open( "df.p", "rb" ) )
 corpus = pickle.load( open( "c.p", "rb" ) )
-#sims = gensim.similarities.Similarity('/',t[corpus],
+sims = gensim.similarities.Similarity('/',t[corpus],
 #                                      num_features=len(d))
 
 query_doc = [w.lower() for w in word_tokenize("have you been to China")]
