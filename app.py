@@ -19,7 +19,7 @@ t = pickle.load( open( "tf_idf.p", "rb" ) )
 s = pickle.load( open( "sims2.p", "rb" ) )
 df = pickle.load( open( "df.p", "rb" ) )
 corpus = pickle.load( open( "c.p", "rb" ) )
-#sims = gensim.similarities.Similarity(dirpath,t[corpus],num_features=len(d))
+#sims = gensim.similarities.Similarity("/app/",t[corpus],num_features=len(d))
 #pickle.dump(sims,open('sims2.p','wb'))
 
 query_doc = [w.lower() for w in word_tokenize("have you been to China")]
@@ -33,4 +33,4 @@ print(df['spoken_words'][result])
 
 @APP.route('/')
 def hello_world():
-    return dirpath
+    return df['spoken_words'][v.argmax()]
