@@ -10,6 +10,7 @@ flask = "*"
 gunicorn = "*"
 psycopg2 = "*"
 nltk = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.7"
