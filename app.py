@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask , request
 import pandas as pd
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
@@ -22,18 +22,23 @@ corpus = pickle.load( open( "c.p", "rb" ) )
 #sims = gensim.similarities.Similarity("/app/",t[corpus],num_features=len(d))
 #pickle.dump(sims,open('sims2.p','wb'))
 
-query_doc = [w.lower() for w in word_tokenize("have you been to China")]
-print(query_doc)
-query_doc_bow = d.doc2bow(query_doc)
-query_doc_tf_idf = t[query_doc_bow]
-v = s[query_doc_tf_idf]
-result = v.argsort()[-10:][::-1]
-condition = (df['id'].isin(result))
-reponse = df[condition]
-reponse.to_json()
-print(reponse.to_json())
 
 
-@APP.route('/')
+
+@APP.route('/',methods=['POST'])
 def hello_world():
+
+    user_input = "testing"
+    query_doc = [w.lower() for w in word_tokenize(user_input)]
+    print(query_doc)
+    query_doc_bow = d.doc2bow(query_doc)
+    query_doc_tf_idf = t[query_doc_bow]
+    v = s[query_doc_tf_idf]
+    result = v.argsort()[-10:][::-1]
+    condition = (df.index.isin(result))
+    reponse = df[condition]
+    # reponse.to_json()
+    print(reponse)
+
+
     return reponse.to_json()
