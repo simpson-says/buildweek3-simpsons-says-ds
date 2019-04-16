@@ -1,4 +1,4 @@
 wordnet
 pros_cons
 reuters
-pun
+punkt
