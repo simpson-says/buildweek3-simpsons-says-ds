@@ -2,7 +2,7 @@ from flask import Flask
 import pandas as pd
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
-#nltk.download('punkt')
+nltk.download('punkt')
 import pickle
 import gensim
 
