@@ -25,10 +25,12 @@ corpus = pickle.load( open( "c.p", "rb" ) )
 
 
 
-@APP.route('/')
+@APP.route('/',methods=['POST'])
 def hello_world():
 
-    user_input = "it was a little of both. Sometimes when a disease is in all the magazines"
+    #user_input = "it was a little of both. Sometimes when a disease is in all the magazines"
+    user_input = request.values['quote']
+    print(user_input)
     query_doc = [w.lower() for w in word_tokenize(user_input)]
     print(query_doc)
     query_doc_bow = d.doc2bow(query_doc)
