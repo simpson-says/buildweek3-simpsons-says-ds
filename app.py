@@ -18,18 +18,20 @@ d = pickle.load( open( "dictionary.p", "rb" ) )
 t = pickle.load( open( "tf_idf.p", "rb" ) )
 s = pickle.load( open( "sims2.p", "rb" ) )
 df = pickle.load( open( "df.p", "rb" ) )
+df = df.rename(columns={'spoken_words_x':'spoken_words','raw_character_text_x':'raw_character_text'})
+#df3 = pickle.load( open( "scripts.pkl", "rb" ) )
 corpus = pickle.load( open( "c.p", "rb" ) )
-#sims = gensim.similarities.Similarity("/app/",t[corpus],num_features=len(d))
-#pickle.dump(sims,open('sims2.p','wb'))
+#s = gensim.similarities.Similarity('/app/',t[corpus],num_features=len(d))
+#pickle.dump(s,open('sims2.p','wb'))
 
-
+print(df.head())
 
 
 @APP.route('/')
 @APP.route('/api',methods=['POST'])
 def hello_world():
 
-    user_input = "it was a little of both. Sometimes when a disease is in all the magazines"
+    user_input = "the goggles do nothing"
     if request.method == 'POST':
         user_input = request.values['quote']
     print(user_input)
@@ -41,13 +43,29 @@ def hello_world():
     result = v.argsort()[-10:][::-1]
     condition = (df.index.isin(result))
     response = df[condition]
-    column = ['id', 'raw_character_text', 'spoken_words']
+    column = ['quote_id', 'raw_character_text', 'spoken_words','episode_title','season','number_in_season']
     response = response[column]
     response.to_json(orient='records')
     print(response)
 
 
     return response.to_json(orient='records')
+
+@APP.route('/getquote')
+def getquote():
+
+    l =[9560, 41110, 76160, 76216, 105073]
+    condition = (df.quote_id.isin(l))
+    response = df[condition]
+    column = ['quote_id', 'raw_character_text', 'spoken_words','episode_title','season','number_in_season']
+    response = response[column]
+    response.to_json(orient='records')
+    print(response)
+
+
+    return response.to_json(orient='records')
+
+
 
 
 @APP.route('/quoteretieve')
