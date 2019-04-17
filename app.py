@@ -51,11 +51,16 @@ def hello_world():
 
     return response.to_json(orient='records')
 
+@APP.route('/getquote',methods=['POST'])
 @APP.route('/getquote')
 def getquote():
+    inputs = '[1,2,3]'
+    if request.method=='POST':
+        inputs = request.values['input']
+    inputs2 = [int(x) for x in inputs.strip('[]').split(',')]
 
-    l =[9560, 41110, 76160, 76216, 105073]
-    condition = (df.quote_id.isin(l))
+    #l =[9560, 41110, 76160, 76216, 105073]
+    condition = (df.quote_id.isin(inputs2))
     response = df[condition]
     column = ['quote_id', 'raw_character_text', 'spoken_words','episode_title','season','number_in_season']
     response = response[column]
