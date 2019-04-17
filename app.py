@@ -4,7 +4,7 @@ import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 import pickle
 import gensim
-
+import random
 
 APP = Flask(__name__)
 
@@ -14,7 +14,7 @@ s = pickle.load( open( "sims2.p", "rb" ) )
 df = pickle.load( open( "df.p", "rb" ) )
 df = df.rename(columns={'spoken_words_x':'spoken_words','raw_character_text_x':'raw_character_text'})
 corpus = pickle.load( open( "c.p", "rb" ) )
-
+quote_dump = pickle.load(open("quote_dump.pkl", "rb" ))
 ## Uncomment and run once for local operation
 # s = gensim.similarities.Similarity('/app/',t[corpus],num_features=len(d))
 # pickle.dump(s,open('sims2.p','wb'))
@@ -58,39 +58,17 @@ def getquote():
     return response.to_json(orient='records')
 
 
-# @APP.route('/gen',methods=['POST'])
-# @APP.route('/gen')
-# def generator():
-#     inputs = '[1,2,3]'
-#     if request.method=='POST':
-#         inputs = request.values['input']
+@APP.route('/gen', methods=['POST'])
+@APP.route('/gen')
+def generator():
+    # Acceptable inputs = ['homer', 'marge', 'bart', 'lisa', 'moe', 'grampa', 'skinner']
+    name = 'homer'
+    if request.method=='POST':
+        name = request.values['input']
     
-#     placeholder = """
-# (re: gown) hmmm... the sea won't stand for this.
-# i know! i'll do a rap.(beat box noise)
-# (re: beaver dam) see? animals can you?
-# (reading) failure to wait by you can never
-# (re: car
-# i need some supplies: a keg of beer(he stands and says:) after sex
-# (re: car
-# angle on: greeting card
-# (re: clocks) look at those celebrities: of all of the sea lion.(terrified)
-# and here's the greatest heroes of all the...
-# i know! i'll do a rap.(beat box noise)
-# (re: beaver dam) see? animals can you?
-# (reading) failure to wait by you can never
-# (re: car
-# i need some supplies: a keg of beer(he stands and says:) after sex
-# (re: car
-# angle on: greeting card
-# (re: clocks) look at those celebrities: of all of the sea lion.(terrified)
-# and here's the greatest heroes of all the...
-# i know! i'll do a rap.(beat box noise)
-# (re: beaver dam) see? animals can you?
-# (reading) failure to wait by you can never
-# (re: car
-# """
-    
-#     return placeholder
+    rand_quotes = random.choices(quote_dump[name], k=10)
+    return_list = [{"charname":name, "quote":x} for x in rand_quotes]
+
+    return str(return_list)
 
 
