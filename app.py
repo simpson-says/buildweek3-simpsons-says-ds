@@ -1,10 +1,12 @@
-from flask import Flask , request
+from flask import Flask , request, make_response
 import pandas as pd
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 import pickle
 import gensim
 import random
+import numpy as np
+import json
 
 APP = Flask(__name__)
 
@@ -67,8 +69,8 @@ def generator():
         name = request.values['input']
     
     rand_quotes = random.choices(quote_dump[name], k=10)
-    return_list = [{"charname":name, "quote":x} for x in rand_quotes]
-
-    return str(return_list)
+    quotes2 = [{'charname':name, 'quote':x} for x in rand_quotes]
+    return_list = json.dumps(quotes2)
+    return return_list
 
 
