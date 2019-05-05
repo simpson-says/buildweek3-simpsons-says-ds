@@ -1,16 +1,12 @@
-from flask import Flask , request
+from flask import Flask , request, make_response
 import pandas as pd
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
-#nltk.download('punkt')
 import pickle
 import gensim
-
-import os
-
-dirpath = os.getcwd()
-dirpath = dirpath +'/'
-
+import random
+import numpy as np
+import json
 
 APP = Flask(__name__)
 
@@ -19,24 +15,21 @@ t = pickle.load( open( "tf_idf.p", "rb" ) )
 s = pickle.load( open( "sims2.p", "rb" ) )
 df = pickle.load( open( "df.p", "rb" ) )
 df = df.rename(columns={'spoken_words_x':'spoken_words','raw_character_text_x':'raw_character_text'})
-#df3 = pickle.load( open( "scripts.pkl", "rb" ) )
 corpus = pickle.load( open( "c.p", "rb" ) )
-#s = gensim.similarities.Similarity('/app/',t[corpus],num_features=len(d))
-#pickle.dump(s,open('sims2.p','wb'))
-
-print(df.head())
+quote_dump = pickle.load(open("quote_dump.pkl", "rb" ))
+## Uncomment and run once for local operation
+# s = gensim.similarities.Similarity('/app/',t[corpus],num_features=len(d))
+# pickle.dump(s,open('sims2.p','wb'))
 
 
 @APP.route('/')
-@APP.route('/api',methods=['POST'])
+@APP.route('/api', methods=['POST'])
 def hello_world():
 
     user_input = "the goggles do nothing"
     if request.method == 'POST':
         user_input = request.values['quote']
-    print(user_input)
     query_doc = [w.lower() for w in word_tokenize(user_input)]
-    print(query_doc)
     query_doc_bow = d.doc2bow(query_doc)
     query_doc_tf_idf = t[query_doc_bow]
     v = s[query_doc_tf_idf]
@@ -46,30 +39,38 @@ def hello_world():
     column = ['quote_id', 'raw_character_text', 'spoken_words','episode_title','season','number_in_season']
     response = response[column]
     response.to_json(orient='records')
-    print(response)
-
 
     return response.to_json(orient='records')
+
 
 @APP.route('/getquote',methods=['POST'])
 @APP.route('/getquote')
 def getquote():
     inputs = '[1,2,3]'
     if request.method=='POST':
-        inputs = request.values['input']
-    inputs2 = [int(x) for x in inputs.strip('[]').split(',')]
-
-    #l =[9560, 41110, 76160, 76216, 105073]
-    condition = (df.quote_id.isin(inputs2))
+        inputs = request.get_json(force=True)['input']
+    
+    condition = (df.quote_id.isin(inputs))
     response = df[condition]
+    print(response)
     column = ['quote_id', 'raw_character_text', 'spoken_words','episode_title','season','number_in_season']
     response = response[column]
     response.to_json(orient='records')
-    print(response)
-
 
     return response.to_json(orient='records')
 
 
+@APP.route('/gen', methods=['POST'])
+@APP.route('/gen')
+def generator():
+    # Acceptable inputs = ['homer', 'marge', 'bart', 'lisa', 'moe', 'grampa', 'skinner']
+    name = 'homer'
+    if request.method=='POST':
+        name = request.values['input']
+    
+    rand_quotes = random.choices(quote_dump[name], k=10)
+    quotes2 = [{'charname':name, 'quote':x} for x in rand_quotes]
+    return_list = json.dumps(quotes2)
+    return return_list
 
 
